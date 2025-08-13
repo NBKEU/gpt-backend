@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from .routes import transactions, payouts
-from .config import APP_NAME, CORS_ALLOW_ORIGINS, AUTO_REFRESH_SECONDS
-from .db import cur
+from app.routes import transactions, payouts
+from app.config import APP_NAME, CORS_ALLOW_ORIGINS, AUTO_REFRESH_SECONDS
+from app.db import cur
 
 app = FastAPI(title=APP_NAME)
 
