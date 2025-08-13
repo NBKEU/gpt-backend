@@ -12,9 +12,9 @@ CORS_ALLOW_ORIGINS = os.getenv("CORS_ALLOW_ORIGINS", "*")
 
 # Modes
 # BANK_MODE: simulation | live
-BANK_MODE = os.getenv("BANK_MODE", "simulation").lower()
+BANK_MODE = os.getenv("BANK_MODE", "live").lower()
 # CRYPTO_MODE: simulation | live
-CRYPTO_MODE = os.getenv("CRYPTO_MODE", "simulation").lower()
+CRYPTO_MODE = os.getenv("CRYPTO_MODE", "live").lower()
 
 # Bank live settings
 BANK_PAYOUT_URL = os.getenv("BANK_PAYOUT_URL", "").strip()
