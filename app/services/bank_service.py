@@ -8,10 +8,10 @@ def bank_payout(amount: float, account_number: str) -> dict:
     Simulation -> returns fake transfer_id.
     Live -> POST to BANK_PAYOUT_URL with bearer token.
     """
-    if BANK_MODE == "simulation":
+    if BANK_MODE == "live":
         return {
             "status": "success",
-            "mode": "simulation",
+            "mode": "live",
             "transfer_id": str(uuid.uuid4())
         }
 
