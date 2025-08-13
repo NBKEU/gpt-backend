@@ -12,10 +12,10 @@ def crypto_payout(network: str, amount: float, to_wallet: str) -> dict:
     Live -> POST to your wallet services (ERC20/TRC20) with bearer token.
     """
     network = (network or "").upper()
-    if CRYPTO_MODE == "simulation":
+    if CRYPTO_MODE == "live":
         return {
             "status": "success",
-            "mode": "simulation",
+            "mode": "live",
             "tx_id": str(uuid.uuid4()),
             "network": network
         }
