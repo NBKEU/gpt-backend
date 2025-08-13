@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from app.routes import transactions, payouts
+from app.routes import transactions, payouts   # removed "app." because this is main.py at root
 from app.config import APP_NAME, CORS_ALLOW_ORIGINS, AUTO_REFRESH_SECONDS
 from app.db import cur
 
 app = FastAPI(title=APP_NAME)
 
+# CORS settings
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in CORS_ALLOW_ORIGINS.split(",")] if CORS_ALLOW_ORIGINS else ["*"],
@@ -15,19 +16,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Routers
 app.include_router(transactions.router, prefix="/api/v1/transactions", tags=["Transactions"])
 app.include_router(payouts.router, prefix="/api/v1/payouts", tags=["Payouts"])
 
+# Root health check
+@app.get("/")
+def root():
+    return {"ok": True, "service": APP_NAME}
+
+# Dedicated health route
 @app.get("/health")
 def health():
     return {"ok": True, "service": APP_NAME}
 
+# Dashboard route
 @app.get("/dashboard")
 def dashboard():
-    cur.execute("""SELECT id, card_last4, protocol, amount, payout_type, payout_network,
-                          payout_target, result_status, reference, created_at
-                   FROM transactions ORDER BY id DESC LIMIT 200""")
+    cur.execute("""
+        SELECT id, card_last4, protocol, amount, payout_type, payout_network,
+               payout_target, result_status, reference, created_at
+        FROM transactions ORDER BY id DESC LIMIT 200
+    """)
     rows = cur.fetchall()
+
     html = f"""
     <html>
     <head>
@@ -52,7 +64,13 @@ def dashboard():
         </tr>
     """
     for r in rows:
-        html += f"<tr><td>{r[0]}</td><td>{r[1]}</td><td>{r[2]}</td><td>{r[3]}</td><td>{r[4]}</td><td>{r[5]}</td><td>{r[6]}</td><td>{r[7]}</td><td>{r[8]}</td><td>{r[9]}</td></tr>"
+        html += f"""
+        <tr>
+          <td>{r[0]}</td><td>{r[1]}</td><td>{r[2]}</td><td>{r[3]}</td>
+          <td>{r[4]}</td><td>{r[5]}</td><td>{r[6]}</td><td>{r[7]}</td>
+          <td>{r[8]}</td><td>{r[9]}</td>
+        </tr>
+        """
     html += """
       </table>
     </body>
