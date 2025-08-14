@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from app.routes import transactions, payouts   # removed "app." because this is main.py at root
+from app.routes import transactions, payouts
 from app.config import APP_NAME, CORS_ALLOW_ORIGINS, AUTO_REFRESH_SECONDS
 from app.db import cur
 
@@ -20,13 +20,15 @@ app.add_middleware(
 app.include_router(transactions.router, prefix="/api/v1/transactions", tags=["Transactions"])
 app.include_router(payouts.router, prefix="/api/v1/payouts", tags=["Payouts"])
 
-# Root health check
-@app.get("/")
+# Root health check (GET + HEAD)
+@app.get("/", include_in_schema=False)
+@app.head("/", include_in_schema=False)
 def root():
     return {"ok": True, "service": APP_NAME}
 
-# Dedicated health route
-@app.get("/health")
+# Dedicated health route (GET + HEAD)
+@app.get("/health", include_in_schema=False)
+@app.head("/health", include_in_schema=False)
 def health():
     return {"ok": True, "service": APP_NAME}
 
